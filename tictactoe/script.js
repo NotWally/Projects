@@ -10,17 +10,43 @@ function makeMove(index) {
         if (checkWinner()) {
             scores[currentPlayer]++;
             saveScoresToLocalStorage();
-            setTimeout(() =>
-                alert(`Player ${currentPlayer} wins!`),
-                restartGame()
-            ,100)
+            setTimeout(() => {
+                // Using SweetAlert for win alert
+                Swal.fire({
+                    title: `Player ${currentPlayer} wins!`,
+                    icon: 'success',
+                    confirmButtonText: 'Play Again',
+                    customClass: {
+                        popup: 'custom-swal-popup',
+                        title: 'custom-swal-title',
+                        confirmButton: 'custom-swal-confirm',
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        restartGame();
+                    }
+                });
+            }, 100);
         } else if (board.every(cell => cell !== '')) {
-            setTimeout(() =>
-                alert('It\'s a draw!'),
-                restartGame()
-            ,100)
+            setTimeout(() => {
+                Swal.fire({
+                    title: 'It\'s a draw!',
+                    icon: 'error',
+                    confirmButtonText: 'Play Again',
+                    customClass: {
+                        popup: 'custom-swal-popup',
+                        title: 'custom-swal-title',
+                        confirmButton: 'custom-swal-confirm',
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        restartGame();
+                    }
+                });
+            }, 100);
         } else {
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            updateCurrentPlayerDisplay();
         }
     }
 }
@@ -71,4 +97,11 @@ function resetScore() {
     scores = { 'X': 0, 'O': 0 };
     saveScoresToLocalStorage();
     updateScoreLabels();
+}
+
+function updateCurrentPlayerDisplay() {
+    var currentPlayerLabel = document.getElementById("currentPlayer");
+    if (currentPlayerLabel) {
+        currentPlayerLabel.innerText = `Current Player: ${currentPlayer}`;
+    }
 }
